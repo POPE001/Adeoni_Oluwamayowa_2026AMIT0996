@@ -23,7 +23,7 @@ The relational design will cover students, programmes, departments, courses, aca
 4. Record marks for a student's required assessments and determine the final course result.
 5. Show a student's current registrations and completed results.
 
-## Initial business rules
+## Business rules
 
 - A course section belongs to one course and one academic term.
 - A student can have at most one enrolment in a particular section.
@@ -31,4 +31,4 @@ The relational design will cover students, programmes, departments, courses, aca
 - Each assessment belongs to a section; a student can receive at most one mark for that assessment.
 - Results are associated with the student, section, and academic term so they can be retrieved as a transcript.
 
-These are working assumptions for the portfolio. Confirm or revise them while building the ER diagram and relational schema, and document any changes.
+These rules were refined while building the ER diagram and schema. The detailed, final version, including the rule that marks earned before a drop are retained but frozen, is in [Portfolio 1 requirements](portfolio-1-database-design/requirements.md).

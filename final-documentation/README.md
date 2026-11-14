@@ -1,10 +1,8 @@
 # Final Documentation
 
-Prepare the 2–3 page summary for LMS submission using evidence from all five portfolio activities.
+The 2–3 page LMS summary is [portfolio-summary.md](portfolio-summary.md). The submitted PDF, [portfolio-summary.pdf](portfolio-summary.pdf), is generated from it by [build-pdf.sh](build-pdf.sh). Screenshot evidence is in [screenshots/](screenshots/).
 
-The current editable draft is [portfolio-summary.md](portfolio-summary.md). It still needs the student's personal audit, reflection details, and a final 2–3 page export for LMS submission.
-
-## Include
+## Contents
 
 - The selected case study and GitHub repository link
 - A concise summary of each portfolio activity with selected supporting evidence

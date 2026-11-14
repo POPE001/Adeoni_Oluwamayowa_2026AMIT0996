@@ -12,7 +12,7 @@ The system supports course and section setup, student enrolment, assessment mark
 4. Lecturers assigned to a section can enter one mark per assessment for each student whose enrolment is not dropped.
 5. Students and the registrar can retrieve registrations and course results.
 
-## Initial business rules
+## Business rules
 
 - Each student belongs to one programme; each programme belongs to one department.
 - Each course belongs to one department.
@@ -31,7 +31,7 @@ The system supports course and section setup, student enrolment, assessment mark
 
 PostgreSQL `CHECK` constraints validate one row at a time. The following rules span multiple rows and need transaction logic, a trigger, or an explicit validation step:
 
-- Section capacity: Portfolio 3 will demonstrate checking the active enrolment count while locking the section row in the same transaction.
+- Section capacity: [Portfolio 3](../portfolio-3-transactions-concurrency/run-results.md) enforces this by locking the section row (or by using `SERIALIZABLE` with retry) while counting active enrolments and inserting in the same transaction.
 - Assessment weights totaling 100 and a complete mark set: run [validate-results.sql](validate-results.sql) before treating a weighted percentage as a final result.
 
 The dropped-enrolment mark rule and immutable mark identity are enforced by a PostgreSQL trigger. The rollback-only script in [edge-case-check.sql](edge-case-check.sql) demonstrates mark retention and rejection of later changes, including reassignment to another section.
