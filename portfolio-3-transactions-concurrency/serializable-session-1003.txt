@@ -1,0 +1,27 @@
+=== student 1003: attempt 1 ===
+Timing is on.
+BEGIN
+Time: 0.062 ms
+ transaction_isolation 
+-----------------------
+ serializable
+(1 row)
+
+Time: 0.100 ms
+ capacity | active_count 
+----------+--------------
+        3 |            2
+(1 row)
+
+Time: 2.191 ms
+ pg_sleep 
+----------
+ 
+(1 row)
+
+Time: 2014.551 ms (00:02.015)
+INSERT 0 1
+Time: 3.620 ms
+COMMIT
+Time: 1.257 ms
+=== student 1003: committed on attempt 1 ===
