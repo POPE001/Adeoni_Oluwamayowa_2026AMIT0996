@@ -1,0 +1,42 @@
+BEGIN
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+INSERT 0 50004
+ANALYZE
+1. Row distribution across the four shards (hash of student_id):
+       shard       | enrolments 
+-------------------+------------
+ enrolment_shard_0 |      12322
+ enrolment_shard_1 |      12786
+ enrolment_shard_2 |      12581
+ enrolment_shard_3 |      12315
+(4 rows)
+
+2. Student transcript query (filters on the shard key) - expect ONE shard:
+                       QUERY PLAN                        
+---------------------------------------------------------
+ Bitmap Heap Scan on enrolment_shard_0 enrolment_sharded
+   Recheck Cond: (student_id = 1001)
+   ->  Bitmap Index Scan on enrolment_shard_0_pkey
+         Index Cond: (student_id = 1001)
+(4 rows)
+
+3. Section roster / capacity count (no shard key) - expect ALL shards (scatter-gather):
+                                     QUERY PLAN                                     
+------------------------------------------------------------------------------------
+ Aggregate
+   ->  Append
+         ->  Seq Scan on enrolment_shard_0 enrolment_sharded_1
+               Filter: ((section_id = 901) AND ((status)::text = 'enrolled'::text))
+         ->  Seq Scan on enrolment_shard_1 enrolment_sharded_2
+               Filter: ((section_id = 901) AND ((status)::text = 'enrolled'::text))
+         ->  Seq Scan on enrolment_shard_2 enrolment_sharded_3
+               Filter: ((section_id = 901) AND ((status)::text = 'enrolled'::text))
+         ->  Seq Scan on enrolment_shard_3 enrolment_sharded_4
+               Filter: ((section_id = 901) AND ((status)::text = 'enrolled'::text))
+(10 rows)
+
+ROLLBACK
