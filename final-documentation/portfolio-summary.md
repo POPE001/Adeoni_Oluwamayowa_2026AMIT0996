@@ -63,7 +63,15 @@ Three lessons stood out:
 
 The shard-key exercise showed that choosing a distribution key is really a decision about which invariant stays local.
 
-[TO COMPLETE IN YOUR OWN WORDS — 2–3 sentences: which part you personally found most challenging, what you changed after a test surprised you, and what you would improve next (for example, a deadlock demonstration, automated change-data-capture into MongoDB, or a real cloud deployment). Delete this bracket afterwards.]
+The most challenging part for me was query optimisation. My first single-run timings suggested the indexes had worked, but when I repeated the runs at 100k students, the weighted query was no faster. I had to read the plan node by node, following the buffer counts, before I could see that the time was in the per-row `mark` lookups and not the part I had indexed.
+
+Testing changed the portfolio in three places:
+
+- I rewrote that query so the new index could be used.
+- My first MongoDB documents were typed by hand and disagreed with the PostgreSQL data, so I replaced them with documents generated from PostgreSQL.
+- I added the `SERIALIZABLE` run so that isolation levels, not just locking, were demonstrated.
+
+Next, I would add a deadlock demonstration, replace the manual MongoDB export with a change-data-capture feed, and deploy the replication setup to a real managed cloud service rather than local containers.
 
 ## References
 
