@@ -1,0 +1,60 @@
+                                                                                          QUERY PLAN                                                                                          
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=11249.60..11249.63 rows=1 width=42) (actual rows=2 loops=1)
+   Group Key: student_results.section_code
+   Buffers: shared hit=101451
+   ->  Sort  (cost=11249.60..11249.61 rows=1 width=34) (actual rows=6050 loops=1)
+         Sort Key: student_results.section_code
+         Sort Method: quicksort  Memory: 429kB
+         Buffers: shared hit=101451
+         ->  Subquery Scan on student_results  (cost=11012.06..11249.59 rows=1 width=34) (actual rows=6050 loops=1)
+               Buffers: shared hit=101448
+               ->  HashAggregate  (cost=11012.06..11249.58 rows=1 width=50) (actual rows=6050 loops=1)
+                     Group Key: cs.section_id, e.student_id
+                     Filter: ((count(m.assessment_no) = count(a.assessment_no)) AND (sum(a.weight_percent) = 100.00))
+                     Batches: 1  Memory Usage: 5009kB
+                     Buffers: shared hit=101448
+                     ->  Nested Loop Left Join  (cost=1.39..10804.23 rows=11876 width=33) (actual rows=12100 loops=1)
+                           Join Filter: ((cs.section_id = m.section_id) AND (a.assessment_no = m.assessment_no))
+                           Rows Removed by Join Filter: 52834
+                           Buffers: shared hit=101448
+                           ->  Merge Join  (cost=0.97..498.67 rows=11876 width=25) (actual rows=12100 loops=1)
+                                 Merge Cond: (a.section_id = cs.section_id)
+                                 Buffers: shared hit=214
+                                 ->  Index Scan using assessment_pk on assessment a  (cost=0.27..32.21 rows=322 width=15) (actual rows=163 loops=1)
+                                       Buffers: shared hit=163
+                                 ->  Materialize  (cost=0.69..302.46 rows=5975 width=26) (actual rows=12099 loops=1)
+                                       Buffers: shared hit=51
+                                       ->  Nested Loop  (cost=0.69..287.52 rows=5975 width=26) (actual rows=6050 loops=1)
+                                             Buffers: shared hit=51
+                                             ->  Nested Loop  (cost=0.27..20.50 rows=2 width=10) (actual rows=2 loops=1)
+                                                   Buffers: shared hit=8
+                                                   ->  Nested Loop  (cost=0.14..20.03 rows=2 width=18) (actual rows=2 loops=1)
+                                                         Join Filter: (c.course_id = cs.course_id)
+                                                         Rows Removed by Join Filter: 160
+                                                         Buffers: shared hit=4
+                                                         ->  Index Scan using course_section_pkey on course_section cs  (cost=0.14..15.57 rows=162 width=26) (actual rows=162 loops=1)
+                                                               Buffers: shared hit=3
+                                                         ->  Materialize  (cost=0.00..2.03 rows=1 width=8) (actual rows=1 loops=162)
+                                                               Buffers: shared hit=1
+                                                               ->  Seq Scan on course c  (cost=0.00..2.03 rows=1 width=8) (actual rows=1 loops=1)
+                                                                     Filter: ((course_code)::text = 'SYN-0040'::text)
+                                                                     Rows Removed by Filter: 81
+                                                                     Buffers: shared hit=1
+                                                   ->  Index Scan using academic_term_pkey on academic_term t  (cost=0.12..0.22 rows=1 width=8) (actual rows=1 loops=2)
+                                                         Index Cond: (term_id = cs.term_id)
+                                                         Filter: (((academic_year)::text = '2026/2027'::text) AND ((term_name)::text = 'First Semester'::text))
+                                                         Buffers: shared hit=4
+                                             ->  Index Only Scan using enrolment_section_result_student_idx on enrolment e  (cost=0.42..103.26 rows=3025 width=16) (actual rows=3025 loops=2)
+                                                   Index Cond: (section_id = cs.section_id)
+                                                   Heap Fetches: 0
+                                                   Buffers: shared hit=43
+                           ->  Index Scan using mark_pk on mark m  (cost=0.42..0.72 rows=10 width=24) (actual rows=5 loops=12100)
+                                 Index Cond: (student_id = e.student_id)
+                                 Buffers: shared hit=101234
+ Planning:
+   Buffers: shared hit=556
+ Planning Time: 4.899 ms
+ Execution Time: 90.430 ms
+(56 rows)
+

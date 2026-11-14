@@ -1,0 +1,8 @@
+--- before indexes
+performance-query.sql: runs=15 min=43.292 median=51.185 max=123.149 ms
+performance-query-rewritten.sql: runs=15 min=81.231 median=85.070 max=97.905 ms
+assessment-performance-query.sql: runs=15 min=26.330 median=27.672 max=29.394 ms
+--- after indexes
+performance-query.sql: runs=15 min=43.857 median=50.592 max=65.362 ms
+performance-query-rewritten.sql: runs=15 min=21.892 median=24.147 max=39.062 ms
+assessment-performance-query.sql: runs=15 min=2.891 median=2.997 max=3.331 ms

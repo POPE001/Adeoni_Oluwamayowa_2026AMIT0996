@@ -1,5 +1,12 @@
 -- Add deterministic synthetic workload data to a fresh database containing
 -- the Portfolio 1 schema and seed data. Run this script once per database.
+-- Scale with psql: psql -v students=100000 -f generate-data.sql
+-- (default 10,000 students; each takes 5 enrolments).
+
+\if :{?students}
+\else
+    \set students 10000
+\endif
 
 BEGIN;
 
@@ -18,10 +25,10 @@ SELECT
     'Student' || g.n,
     'Synthetic',
     'student' || g.n || '@example.edu'
-FROM generate_series(1, 10000) AS g(n);
+FROM generate_series(1, :students) AS g(n);
 
 INSERT INTO course_section (course_id, term_id, section_code, capacity)
-SELECT c.course_id, 201, section.section_code, 500
+SELECT c.course_id, 201, section.section_code, GREATEST(500, :students / 20)
 FROM course AS c
 CROSS JOIN (VALUES ('A'), ('B')) AS section(section_code)
 WHERE c.course_code LIKE 'SYN-%';
