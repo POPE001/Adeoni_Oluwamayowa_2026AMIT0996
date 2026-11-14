@@ -2,6 +2,8 @@
 
 A practical Advanced Database Systems portfolio for MIT 8103, covering relational database design, SQL query optimisation, transaction management, concurrency control, NoSQL modelling, and distributed/cloud database concepts.
 
+**Student:** Oluwamayowa Adeoni (2026/A/MIT/0996), Master of Information Technology, 2026/2027 First Semester
+
 ## Case study
 
 The portfolio uses a fictional university course registration and results portal. See [CASE_STUDY.md](CASE_STUDY.md) for its scope, users, data, and core operations.
