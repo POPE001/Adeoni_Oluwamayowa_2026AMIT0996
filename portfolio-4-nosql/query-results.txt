@@ -1,6 +1,7 @@
-Transcript lookup by matriculation number:
+1. Transcript lookup by matriculation number (one document read):
 {
   _id: 'MIT-2026-001',
+  studentId: 1001,
   student: {
     firstName: 'Ada',
     lastName: 'Okafor',
@@ -16,71 +17,69 @@ Transcript lookup by matriculation number:
       termName: 'First Semester',
       courses: [
         {
-          courseCode: 'MIT8103',
-          courseTitle: 'Advanced Database Systems',
-          sectionCode: 'A',
-          status: 'completed',
-          assessments: [
-            {
-              no: 1,
-              title: 'Coursework',
-              scorePercent: 78,
-              weightPercent: 40
-            },
-            {
-              no: 2,
-              title: 'Final Examination',
-              scorePercent: 82,
-              weightPercent: 60
-            }
-          ],
-          finalPercent: 80.4
-        },
-        {
           courseCode: 'CSC8101',
           courseTitle: 'Database Design',
+          creditUnits: 3,
           sectionCode: 'A',
-          status: 'completed',
+          enrolmentStatus: 'enrolled',
+          assessments: [],
+          finalPercent: null,
+          resultStatus: 'pending'
+        },
+        {
+          courseCode: 'MIT8103',
+          courseTitle: 'Advanced Database Systems',
+          creditUnits: 3,
+          sectionCode: 'A',
+          enrolmentStatus: 'enrolled',
           assessments: [
             {
               no: 1,
               title: 'Coursework',
-              scorePercent: 74,
-              weightPercent: 40
+              weightPercent: 40,
+              scorePercent: 78
             },
             {
               no: 2,
               title: 'Final Examination',
-              scorePercent: 79,
-              weightPercent: 60
+              weightPercent: 60,
+              scorePercent: 82
             }
           ],
-          finalPercent: 77
+          finalPercent: 80.4,
+          resultStatus: 'available'
         }
       ]
     }
   ]
 }
-Students with an MIT8103 result in the first semester:
+2. Available MIT8103 results, 2026/2027 First Semester:
 [
   {
     _id: 'MIT-2026-001',
     studentName: 'Ada Okafor',
-    courseCode: 'MIT8103',
     finalPercent: 80.4
   },
   {
     _id: 'MIT-2026-002',
     studentName: 'Tunde Bello',
-    courseCode: 'MIT8103',
     finalPercent: 70.4
   }
 ]
-Average MIT8103 final percentage:
+3. Course results that are not yet available (registrar follow-up):
 [
   {
-    studentsWithResults: 2,
-    courseCode: 'MIT8103',
-    averageFinalPercent: 75.4
+    _id: {
+      courseCode: 'CSC8101',
+      resultStatus: 'pending'
+    },
+    students: 1
+  },
+  {
+    _id: {
+      courseCode: 'MIT8103',
+      resultStatus: 'withdrawn'
+    },
+    students: 1
   }
 ]

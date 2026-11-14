@@ -1,89 +1,101 @@
+// Load transcript documents exported from PostgreSQL (export-transcripts.sql)
+// into MongoDB, with a schema validator and the supporting index.
+//
+//   TRANSCRIPTS_FILE=/path/to/transcripts.ndjson mongosh --quiet load-data.js
+//
+// The file is newline-delimited JSON, one transcript per student. Use
+// transcripts-seed.ndjson (the 4 Portfolio 1 students, committed) or a full
+// export from the Portfolio 2 synthetic database (10,004 students).
+
+const fs = require("fs");
+
+const sourceFile = process.env.TRANSCRIPTS_FILE || "transcripts-seed.ndjson";
 const portfolioDb = db.getSiblingDB("mit8103_portfolio4");
+
+portfolioDb.studentTranscripts.drop();
+
+// The document model is flexible, but the fields the portal relies on are
+// still validated on write.
+portfolioDb.createCollection("studentTranscripts", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["_id", "studentId", "student", "programme", "terms"],
+      properties: {
+        _id: { bsonType: "string", description: "matriculation number" },
+        studentId: { bsonType: ["int", "long"] },
+        terms: {
+          bsonType: "array",
+          items: {
+            bsonType: "object",
+            required: ["academicYear", "termName", "courses"],
+            properties: {
+              courses: {
+                bsonType: "array",
+                items: {
+                  bsonType: "object",
+                  required: ["courseCode", "enrolmentStatus", "resultStatus"],
+                  properties: {
+                    enrolmentStatus: { enum: ["enrolled", "dropped", "completed"] },
+                    resultStatus: { enum: ["available", "pending", "withdrawn"] },
+                    finalPercent: {
+                      bsonType: ["double", "int", "null"],
+                      minimum: 0,
+                      maximum: 100
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  validationAction: "error"
+});
+
 const transcripts = portfolioDb.studentTranscripts;
 
-transcripts.drop();
+const lines = fs
+  .readFileSync(sourceFile, "utf8")
+  .split("\n")
+  .filter((line) => line.trim() !== "");
 
-transcripts.insertMany([
-  {
-    _id: "MIT-2026-001",
-    studentId: 1001,
-    student: {
-      firstName: "Ada",
-      lastName: "Okafor",
-      email: "ada.okafor@example.edu"
-    },
-    programme: {
-      code: "MIT",
-      name: "Master of Information Technology"
-    },
-    terms: [
-      {
-        academicYear: "2026/2027",
-        termName: "First Semester",
-        courses: [
-          {
-            courseCode: "MIT8103",
-            courseTitle: "Advanced Database Systems",
-            sectionCode: "A",
-            status: "completed",
-            assessments: [
-              { no: 1, title: "Coursework", scorePercent: 78, weightPercent: 40 },
-              { no: 2, title: "Final Examination", scorePercent: 82, weightPercent: 60 }
-            ],
-            finalPercent: 80.4
-          },
-          {
-            courseCode: "CSC8101",
-            courseTitle: "Database Design",
-            sectionCode: "A",
-            status: "completed",
-            assessments: [
-              { no: 1, title: "Coursework", scorePercent: 74, weightPercent: 40 },
-              { no: 2, title: "Final Examination", scorePercent: 79, weightPercent: 60 }
-            ],
-            finalPercent: 77.0
-          }
-        ]
-      }
-    ]
-  },
-  {
-    _id: "MIT-2026-002",
-    studentId: 1002,
-    student: {
-      firstName: "Tunde",
-      lastName: "Bello",
-      email: "tunde.bello@example.edu"
-    },
-    programme: {
-      code: "MIT",
-      name: "Master of Information Technology"
-    },
-    terms: [
-      {
-        academicYear: "2026/2027",
-        termName: "First Semester",
-        courses: [
-          {
-            courseCode: "MIT8103",
-            courseTitle: "Advanced Database Systems",
-            sectionCode: "A",
-            status: "completed",
-            assessments: [
-              { no: 1, title: "Coursework", scorePercent: 65, weightPercent: 40 },
-              { no: 2, title: "Final Examination", scorePercent: 74, weightPercent: 60 }
-            ],
-            finalPercent: 70.4
-          }
-        ]
-      }
-    ]
-  }
-]);
+const batchSize = 1000;
+let inserted = 0;
+for (let i = 0; i < lines.length; i += batchSize) {
+  const batch = lines.slice(i, i + batchSize).map((line) => EJSON.parse(line, { relaxed: false }));
+  inserted += Object.keys(transcripts.insertMany(batch).insertedIds).length;
+}
 
+// Supports "which students have a result for course X?" queries.
 transcripts.createIndex({ "terms.courses.courseCode": 1 });
 
-print("Inserted transcript documents:");
-print(transcripts.countDocuments());
+print(`Source file: ${sourceFile}`);
+print(`Inserted transcript documents: ${inserted}`);
+print(`Collection count: ${transcripts.countDocuments()}`);
 print("Indexes:");
-printjson(transcripts.getIndexes().map(index => index.name));
+printjson(transcripts.getIndexes().map((index) => index.name));
+
+print("Validator check - inserting an invalid resultStatus should fail:");
+try {
+  transcripts.insertOne({
+    _id: "INVALID-TEST",
+    studentId: 1,
+    student: {},
+    programme: {},
+    terms: [
+      {
+        academicYear: "2026/2027",
+        termName: "First Semester",
+        courses: [
+          { courseCode: "X", enrolmentStatus: "enrolled", resultStatus: "passed" }
+        ]
+      }
+    ]
+  });
+  print("UNEXPECTED: invalid document was accepted");
+} catch (error) {
+  print(`Rejected as expected: ${error.codeName || error.name} - ${error.errmsg || error.message}`);
+}

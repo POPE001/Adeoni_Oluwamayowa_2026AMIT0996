@@ -1,7 +1,10 @@
-Inserted transcript documents:
-2
+Source file: transcripts-seed.ndjson
+Inserted transcript documents: 4
+Collection count: 4
 Indexes:
 [
   '_id_',
   'terms.courses.courseCode_1'
 ]
+Validator check - inserting an invalid resultStatus should fail:
+Rejected as expected: MongoServerError - Document failed validation

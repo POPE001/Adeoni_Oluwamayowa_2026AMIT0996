@@ -1,0 +1,157 @@
+1. Transcript lookup by matriculation number (one document read):
+{
+  _id: 'MIT-2026-001',
+  studentId: 1001,
+  student: {
+    firstName: 'Ada',
+    lastName: 'Okafor',
+    email: 'ada.okafor@example.edu'
+  },
+  programme: {
+    code: 'MIT',
+    name: 'Master of Information Technology'
+  },
+  terms: [
+    {
+      academicYear: '2026/2027',
+      termName: 'First Semester',
+      courses: [
+        {
+          courseCode: 'CSC8101',
+          courseTitle: 'Database Design',
+          creditUnits: 3,
+          sectionCode: 'A',
+          enrolmentStatus: 'enrolled',
+          assessments: [],
+          finalPercent: null,
+          resultStatus: 'pending'
+        },
+        {
+          courseCode: 'MIT8103',
+          courseTitle: 'Advanced Database Systems',
+          creditUnits: 3,
+          sectionCode: 'A',
+          enrolmentStatus: 'enrolled',
+          assessments: [
+            {
+              no: 1,
+              title: 'Coursework',
+              weightPercent: 40,
+              scorePercent: 78
+            },
+            {
+              no: 2,
+              title: 'Final Examination',
+              weightPercent: 60,
+              scorePercent: 82
+            }
+          ],
+          finalPercent: 80.4,
+          resultStatus: 'available'
+        }
+      ]
+    }
+  ]
+}
+2. Available MIT8103 results, 2026/2027 First Semester:
+[
+  {
+    _id: 'MIT-2026-001',
+    studentName: 'Ada Okafor',
+    finalPercent: 80.4
+  },
+  {
+    _id: 'MIT-2026-002',
+    studentName: 'Tunde Bello',
+    finalPercent: 70.4
+  }
+]
+3. Course results that are not yet available (registrar follow-up):
+[
+  {
+    _id: {
+      courseCode: 'CSC8101',
+      resultStatus: 'pending'
+    },
+    students: 1
+  },
+  {
+    _id: {
+      courseCode: 'MIT8103',
+      resultStatus: 'withdrawn'
+    },
+    students: 1
+  },
+  {
+    _id: {
+      courseCode: 'SYN-0001',
+      resultStatus: 'withdrawn'
+    },
+    students: 20
+  },
+  {
+    _id: {
+      courseCode: 'SYN-0002',
+      resultStatus: 'withdrawn'
+    },
+    students: 20
+  },
+  {
+    _id: {
+      courseCode: 'SYN-0003',
+      resultStatus: 'withdrawn'
+    },
+    students: 20
+  },
+  {
+    _id: {
+      courseCode: 'SYN-0004',
+      resultStatus: 'withdrawn'
+    },
+    students: 20
+  },
+  {
+    _id: {
+      courseCode: 'SYN-0005',
+      resultStatus: 'withdrawn'
+    },
+    students: 20
+  },
+  {
+    _id: {
+      courseCode: 'SYN-0006',
+      resultStatus: 'withdrawn'
+    },
+    students: 20
+  },
+  {
+    _id: {
+      courseCode: 'SYN-0007',
+      resultStatus: 'withdrawn'
+    },
+    students: 20
+  },
+  {
+    _id: {
+      courseCode: 'SYN-0008',
+      resultStatus: 'withdrawn'
+    },
+    students: 20
+  }
+]
+4. SYN-0040 results by section (cross-check against the PostgreSQL query in Portfolio 2):
+[
+  {
+    studentsWithResults: 304,
+    sectionCode: 'A',
+    averageFinalPercent: 74.5
+  },
+  {
+    studentsWithResults: 304,
+    sectionCode: 'B',
+    averageFinalPercent: 74.84
+  }
+]
+5. Index evidence: find students with a SYN-0040 result
+With multikey index: plan=FETCH <- IXSCAN(terms.courses.courseCode_1), nReturned=628, totalKeysExamined=628, totalDocsExamined=628, executionTimeMillis=0
+Forced collection scan: plan=COLLSCAN, nReturned=628, totalKeysExamined=0, totalDocsExamined=10004, executionTimeMillis=9

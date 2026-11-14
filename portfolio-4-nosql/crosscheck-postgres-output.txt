@@ -1,0 +1,6 @@
+ section_code | students_with_results | avg_unrounded_finals | avg_rounded_finals 
+--------------+-----------------------+----------------------+--------------------
+ A            |                   304 |                74.49 |              74.50
+ B            |                   304 |                74.84 |              74.84
+(2 rows)
+

@@ -1,0 +1,10 @@
+Source file: /data-export/transcripts-synthetic.ndjson
+Inserted transcript documents: 10004
+Collection count: 10004
+Indexes:
+[
+  '_id_',
+  'terms.courses.courseCode_1'
+]
+Validator check - inserting an invalid resultStatus should fail:
+Rejected as expected: MongoServerError - Document failed validation
