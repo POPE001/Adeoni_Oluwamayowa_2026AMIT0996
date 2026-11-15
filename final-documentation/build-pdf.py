@@ -38,6 +38,12 @@ img {{ display: block; max-width: 100%; max-height: 118mm; margin: 4pt auto 8pt;
 <script>
 const md = {json.dumps(markdown)};
 document.getElementById("content").innerHTML = marked.parse(md);
+// Relative links point at repository files: send them to GitHub, not file://.
+const repoBase = "https://github.com/POPE001/Adeoni_Oluwamayowa_2026AMIT0996/blob/main/final-documentation/";
+for (const a of document.querySelectorAll("a[href]")) {{
+  const href = a.getAttribute("href");
+  if (!/^[a-z]+:/i.test(href) && !href.startsWith("#")) a.href = new URL(href, repoBase).href;
+}}
 for (const h of document.querySelectorAll("h2")) {{
   if (h.textContent.startsWith("Appendix")) h.id = "appendix";
 }}
