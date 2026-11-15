@@ -4,6 +4,8 @@ A practical Advanced Database Systems portfolio for MIT 8103, covering relationa
 
 **Student:** Oluwamayowa Adeoni (2026/A/MIT/0996), Master of Information Technology, 2026/2027 First Semester
 
+**Repository:** <https://github.com/POPE001/Adeoni_Oluwamayowa_2026AMIT0996>
+
 ## Case study
 
 The portfolio uses a fictional university course registration and results portal. See [CASE_STUDY.md](CASE_STUDY.md) for its scope, users, data, and core operations.
