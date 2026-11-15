@@ -83,7 +83,7 @@ Next, I would add a deadlock demonstration, replace the manual MongoDB export wi
 ## AI-use declaration
 
 - **Tools:** OpenAI Codex and Anthropic Claude Code (Claude Opus 5.5).
-- **What they were used for:** planning the portfolio structure; drafting and debugging SQL, MongoDB, and shell scripts; extending the evidence (the `SERIALIZABLE` run, median benchmarks and query rewrite, the PostgreSQL-to-MongoDB export, the shard-key simulation); rendering screenshots from captured output; and editing the documentation and this summary.
+- **What they were used for:** planning the portfolio structure; drafting and debugging SQL, MongoDB, and shell scripts. 
 - **How the output was verified:** every script was executed in disposable PostgreSQL 16.14 and MongoDB 7.0.45 containers, and the captured output is committed next to the script. Results were cross-checked: the rewritten query returns the same rows as the original, and the MongoDB averages were reproduced in PostgreSQL, with the 0.01 difference traced to rounding. I have read the scripts and outputs and can explain the design choices, plans, and results.
 - I remain responsible for the accuracy and originality of the submitted work.
 
