@@ -2,7 +2,7 @@
 
 **Student:** Oluwamayowa Adeoni  **Student ID:** 2026/A/MIT/0996
 **Programme:** Master of Information Technology, 2026/2027 First Semester
-**Repository:** <https://github.com/POPE001/mit-8103-advanced-database-portfolio>
+**Repository:** <https://github.com/POPE001/Adeoni_Oluwamayowa_2026AMIT0996>
 
 ## Selected case study
 
